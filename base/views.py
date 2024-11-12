@@ -1,11 +1,34 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
+from .forms import LoginForm 
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Address, Program, User, Student, Instructor, Course, Schedule, Enrollment, Grade, Permission, Role
 from .forms import AddressForm, ProgramForm, UserForm, StudentForm, InstructorForm, CourseForm, ScheduleForm, EnrollmentForm, GradeForm
 
+
 def home(request):
 	return render(request, 'base/home.html')
+
+def login_view(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(request, username=username, password=password)
+            
+            if user is not None:
+                login(request, user)
+                return redirect('home')  # Redirect to a homepage or dashboard
+            else:
+                messages.error(request, 'Invalid username or password')
+    else:
+        form = LoginForm()
+    
+    return render(request, 'login.html', {'form': form}) #directory sa html containing credentials
+
 
 # Address Views
 class AddressListView(ListView):
