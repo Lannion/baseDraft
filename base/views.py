@@ -27,7 +27,7 @@ def login_view(request):
     else:
         form = LoginForm()
     
-    return render(request, 'login.html', {'form': form}) #directory sa html containing credentials
+    return render(request, 'login.html', {'form': form}) #directory sa html containing credentials also passing the class model
 
 
 # Address Views
